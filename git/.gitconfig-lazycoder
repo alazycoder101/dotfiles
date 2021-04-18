@@ -1,0 +1,7 @@
+[user]
+  name = lazycoder
+  email = alazycoder101@gmail.com
+[push]
+  default = current
+[format]
+  pretty = %Cblue%h%Creset %Cgreen[%ar]%Creset (%an) %s

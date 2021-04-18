@@ -1,0 +1,54 @@
+[alias]
+  co = checkout
+  br = branch
+  lp = log -p
+  df = diff
+  lg = log --pretty=format:'%Cred%h%Creset -%Creset %s %Cgreen(%cr) %C(bold blue)%an%Creset'
+  ll = log --graph --decorate --pretty=oneline --abbrev-commit
+  lol = log --graph --pretty=format:'%C(red)%h%C(reset) %C(yellow)%d%C(reset)%s %C(green)%an %C(bold black)%cr%C(reset)' --abbrev-commit --date=relative
+  lola = log --graph --decorate --pretty=oneline --abbrev-commit --all
+  c = commit -m
+  a = add
+  dfc = diff --cached
+  pl = pull
+  ps = push
+  plre = pull --rebase
+  st = status
+  out = log origin..HEAD
+  qpl = log --pretty=\"%Cblue%h%Creset %Cgreen[%cr]%Creset %s\" origin/production..origin/master
+  graph = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr)%Creset' --abbrev-commit --date=relative
+  ci = commit
+  ca = commit --amend
+  pr = remote prune origin
+  up = !git fetch origin && git rebase origin/master
+  rbc = rebase --continue
+  rbi = rebase -i
+  mm = !test `git rev-parse master` = $(git merge-base HEAD master) && git checkout master && git merge HEAD@{1} || echo "Non-fastforward"
+  sup = submodule update
+  compare = log --left-right --graph --cherry-pick --oneline
+[color]
+  ui = true
+  branch = auto
+  diff = auto
+  interactive = auto
+  status = auto
+[color "branch"]
+    current = yellow reverse
+    local = yellow
+    remote = green
+[color "diff"]
+    meta = yellow bold
+    frag = magenta bold
+    old = red bold
+    new = green bold
+[color "status"]
+    added = yellow
+    changed = green
+    untracked = cyan
+[core]
+  pager = less -r
+  editor = /opt/homebrew/bin/vim
+[includeIf "gitdir:~/lazycoder"]
+  path = ~/.gitconfig-lazycoder
+[includeIf "gitdir:~/public_html"]
+  path = ~/.gitconfig-company
