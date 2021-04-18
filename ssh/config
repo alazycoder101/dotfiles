@@ -1,0 +1,40 @@
+KexAlgorithms +diffie-hellman-group1-sha1
+
+SendEnv LC_TERM_PROGRAM
+#Host *
+#ForwardX11 yes
+#ForwardX11Trusted yes
+#Default GitHub
+
+Host github.com
+  HostName github.com
+  User git
+  #IdentitiesOnly yes
+  IdentityFile ~/.ssh/id_rsa
+  ControlMaster no
+Host github-lazycoder
+  HostName github.com
+  User git
+  AddKeysToAgent yes
+  UseKeychain yes
+  IdentitiesOnly yes
+  IdentityFile ~/.ssh/id_rsa_lazycoder
+  ControlMaster no
+Host *
+  User coder
+  #HostKeyAlgorithms +ssh-dss
+  AddKeysToAgent yes
+  UseKeychain yes
+  IdentityFile ~/.ssh/id_rsa
+  #ForwardAgent yes
+  #Repeated Connections
+  #Resilient Connections
+  TCPKeepAlive no
+  ServerAliveInterval 60
+  ServerAliveCountMax 10
+
+  ControlMaster auto
+  ControlPath ~/.ssh/sockets/%r@%h-%p
+  ControlPersist 600
+  #ControlPersist 4h
+
