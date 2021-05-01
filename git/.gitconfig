@@ -48,7 +48,7 @@
 [core]
   pager = less -r
   editor = /opt/homebrew/bin/vim
-[includeIf "gitdir:~/lazycoder"]
+[includeIf "gitdir:~/lazycoder/"]
   path = ~/.gitconfig-lazycoder
-[includeIf "gitdir:~/public_html"]
+[includeIf "gitdir:~/company/"]
   path = ~/.gitconfig-company
