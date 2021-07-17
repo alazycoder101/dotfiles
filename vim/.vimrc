@@ -36,9 +36,12 @@ Plug 'nsf/gocode', { 'tag': 'v.20150303', 'rtp': 'vim' }
 " Plugin outside ~/.vim/plugged with post-update hook
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 
+Plug 'jlanzarotta/bufexplorer'
+
 " My Install
 Plug 'marcweber/vim-addon-mw-utils'
 Plug 'yegappan/mru', { 'tag': '*' }
+
 " colorscheme
 "Plug 'sjl/badwolf', { 'tag': '*' }
 " ctrlp
@@ -58,12 +61,14 @@ Plug 'nathanaelkane/vim-indent-guides', { 'tag': '*' }
 Plug 'pangloss/vim-javascript'
 Plug 'leshill/vim-json'
 Plug 'w0rp/ale'
+"Plug 'dense-analysis/ale'
 Plug 'christoomey/vim-tmux-navigator'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-repeat'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-rails'
 Plug 'tpope/vim-endwise'
+Plug 'tpope/vim-commentary'
 Plug 'thoughtbot/vim-rspec'
 Plug 'skywind3000/asyncrun.vim'
 Plug 'slim-template/vim-slim'
@@ -81,6 +86,8 @@ Plug 'tomtom/tcomment_vim'
 Plug 'godlygeek/tabular'
 
 "Plug 'troydm/shellasync.vim'
+Plug 'itchyny/lightline.vim'
+
 
 " Unmanaged plugin (manually installed and updated)
 Plug '~/my-prototype-plugin'
@@ -94,17 +101,53 @@ Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
-
 Plug 'dense-analysis/ale'
+
+Plug 'codota/tabnine-vim'
+Plug 'kevinhwang91/nvim-bqf'
+Plug 'romainl/vim-qf'
+
+" highly recommended
+"Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+
+" Ruby on Rails
+"Plug 'Shougo/ddc.vim'
+"Plug 'vim-denops/denops.vim'
+
+"Plug 'Shougo/neosnippet.vim'
+"Plug 'Shougo/neosnippet-snippets'
 
 " Initialize plugin system
 call plug#end()
 
-let g:ale_lint_on_save = 1
-let g:ale_lint_on_text_changed = 0
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => Ale (syntax checker and linter)
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+let g:ale_linters = {
+      \   'ruby': ['standardrb', 'rubocop'],
+      \   'python': ['flake8', 'pylint'],
+      \   'javascript': ['eslint', 'jshint'],
+      \   'go': ['go', 'golint', 'errcheck']
+      \}
+
+let g:ale_fixers = {
+      \    'ruby': ['standardrb'],
+      \}
+let g:ale_fix_on_save = 1
+
+nmap <silent> <leader>a <Plug>(ale_next_wrap)
+
+" Disabling highlighting
+let g:ale_set_highlights = 0
+
+" Only run linting when saving the file
+"let g:ale_lint_on_save = 1
+let g:ale_lint_on_text_changed = 'never'
+let g:ale_lint_on_enter = 0
+
 
 set nocompatible | filetype indent plugin on | syn on
-let mapleader=","
 " set number
 set ruler
 "syntax on
@@ -149,34 +192,80 @@ set laststatus=2
 " mouse on!
 " set mouse=a
 
-" NERDTree configuration
-let NERDTreeIgnore=['\.rbc$', '\~$']
-map <Leader>n :NERDTreeToggle<CR>
+""""""""""""""""""""""""""""""
+" => bufExplorer plugin
+""""""""""""""""""""""""""""""
+let g:bufExplorerDefaultHelp=0
+let g:bufExplorerShowRelativePath=1
+let g:bufExplorerFindActive=1
+let g:bufExplorerSortBy='name'
+map <leader>be :BufExplorer<cr>
 
-" CtrlP configuration
+
+""""""""""""""""""""""""""""""
+" => MRU plugin
+""""""""""""""""""""""""""""""
+let MRU_Max_Entries = 400
+map <leader>m :MRU<CR>
+
+""""""""""""""""""""""""""""""
+" => YankRing
+""""""""""""""""""""""""""""""
+nnoremap <leader>yr :YRShow<CR>
+
+""""""""""""""""""""""""""""""
+" => snipMate (beside <TAB> support <CTRL-j>)
+""""""""""""""""""""""""""""""
+ino <C-j> <C-r>=snipMate#TriggerSnippet()<cr>
+snor <C-j> <esc>i<right><C-r>=snipMate#TriggerSnippet()<cr>
+let g:snipMate = { 'snippet_version' : 1 }
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => Nerd Tree
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+let NERDTreeIgnore=['\.rbc$', '\~$', '\.pyc$', '__pycache__']
+let NERDTreeShowHidden=0
+let g:NERDTreeWinSize=35
+"let g:NERDTreeWinPos = "right"
+map <leader>nn :NERDTreeToggle<cr>
+map <leader>nb :NERDTreeFromBookmark<Space>
+map <leader>nf :NERDTreeFind<cr>
+
+""""""""""""""""""""""""""""""
+" => CTRL-P
+""""""""""""""""""""""""""""""
 let g:ctrlp_match_window = 'max:20,order:btt'
 let g:ctrlp_user_command = ['.git', 'cd %s && git ls-files -co --exclude-standard', 'find %s -type f']
 let g:ctrlp_custom_ignore = {
-    \ 'dir':  '\v[\/]\.(git|hg|svn)$',
+    \ 'dir':  '\v[\/]\.(git|hg|svn|coffee|DS_Store)$',
     \ 'file': '\v^\.|\.(swp|swo)$',
     \ }
+"let g:ctrlp_custom_ignore = 'node_modules\|^\.DS_Store\|^\.git\|^\.coffee'
 let g:ctrlp_show_hidden = 0
 let g:ctrlp_lazy_update = 125
 let g:ctrlp_clear_cache_on_exit = 0
 let g:ctrlp_extensions = ['tag', 'buffertag', 'quickfix', 'dir', 'rtscript',
                           \ 'undo', 'line', 'changes', 'mixed', 'bookmarkdir']
+let g:ctrlp_max_height = 20
 " Use a leader instead of the actual named binding
 nmap <leader>p :CtrlP<cr>
 
 " Easy bindings for its various modes
 nmap <leader>bb :CtrlPBuffer<cr>
 nmap <leader>bm :CtrlPMixed<cr>
-nmap <leader>bs :CtrlPMRU<cr>
+nmap <leader>bu :CtrlPMRU<cr>
+
+let g:ctrlp_working_path_mode = 0
+
+" Quickly find and open a file in the current working directory
+let g:ctrlp_map = '<C-f>'
+map <leader>j :CtrlP<cr>
+
+
 
 " Buffergator
 " Use the right side of the screen
 let g:buffergator_viewport_split_policy = 'R'
-
 " I want my own keymappings...
 let g:buffergator_suppress_keymaps = 1
 
@@ -289,8 +378,6 @@ map <leader>et :tabe <C-R>=expand("%:p:h") . "/" <CR>
 set backupdir=~/.vim/backup
 set directory=~/.vim/backup
 
-": Most Recently Used (MRU)
-nmap <silent> <leader>r :MRU<cr>
 " system clipboard
 "set clipboard=unnamed
 let g:ale_emit_conflict_warnings = 0
@@ -303,7 +390,51 @@ cabbrev lvim
       \ <C-Left><C-Left><C-Left>
 "fzf
 set rtp+=/usr/local/opt/fzf
-let g:snipMate = { 'snippet_version' : 1 }
+
+""""""""""""""""""""""""""""""
+" => Vim ACK
+""""""""""""""""""""""""""""""
+let g:ackprg = 'rg --vimgrep --type-not sql --smart-case'
+"
+"" Auto close the Quickfix list after pressing '<enter>' on a list item
+let g:ack_autoclose = 1
+
+" Any empty ack search will search for the work the cursor is on
+" let g:ack_use_cword_for_empty_search = 1
+"
+" Don't jump to first match
+cnoreabbrev Ack Ack!
+
+" Maps <leader>/ so we're ready to type the search keyword
+nnoremap <Leader>/ :Ack!<Space>
+" Navigate quickfix list with ease
+nnoremap <silent> [q :cprevious<CR>]"
+nnoremap <silent> ]q :cnext<CR>]"
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => lightline
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+let g:lightline = {
+      \ 'colorscheme': 'wombat',
+      \ 'active': {
+      \   'left': [ ['mode', 'paste'],
+      \             ['fugitive', 'readonly', 'filename', 'modified'] ],
+      \   'right': [ [ 'lineinfo' ], ['percent'] ]
+      \ },
+      \ 'component': {
+      \   'readonly': '%{&filetype=="help"?"":&readonly?"🔒":""}',
+      \   'modified': '%{&filetype=="help"?"":&modified?"+":&modifiable?"":"-"}',
+      \   'fugitive': '%{exists("*FugitiveHead")?FugitiveHead():""}'
+      \ },
+      \ 'component_visible_condition': {
+      \   'readonly': '(&filetype!="help"&& &readonly)',
+      \   'modified': '(&filetype!="help"&&(&modified||!&modifiable))',
+      \   'fugitive': '(exists("*FugitiveHead") && ""!=FugitiveHead())'
+      \ },
+      \ 'separator': { 'left': ' ', 'right': ' ' },
+      \ 'subseparator': { 'left': ' ', 'right': ' ' }
+      \ }
+
 
 "aireline
 let g:airline#extensions#tabline#enabled = 1
@@ -374,6 +505,19 @@ function! s:show_documentation()
   else
     execute '!' . &keywordprg . " " . expand('<cword>')
   endif
+endfunction
+
+function! LinterStatus() abort
+  let l:counts = ale#statusline#Count(bufnr(''))
+
+  let l:all_errors = l:counts.error + l:counts.style_error
+  let l:all_non_errors = l:counts.total - l:all_errors
+
+  return l:counts.total == 0 ? '✨ all good ✨' : printf(
+        \   '😞 %dW %dE',
+        \   all_non_errors,
+        \   all_errors
+        \)
 endfunction
 
 " Highlight the symbol and its references when holding the cursor.
@@ -461,3 +605,10 @@ nnoremap <silent><nowait> <space>j  :<C-u>CocNext<CR>
 nnoremap <silent><nowait> <space>k  :<C-u>CocPrev<CR>
 " Resume latest coc list.
 nnoremap <silent><nowait> <space>p  :<C-u>CocListResume<CR>
+
+"Tab #Better tab experience - from https://webdevetc.com/
+map <leader>tn :tabnew<cr>
+map <leader>t<leader> :tabnext
+map <leader>tm :tabmove
+map <leader>tc :tabclose<cr>
+map <leader>to :tabonly<cr>
