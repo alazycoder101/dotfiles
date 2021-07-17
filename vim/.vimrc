@@ -1118,9 +1118,9 @@ endfunc
 "
 "=================================================================================
 
-map <leader>cc :call CompileRun()<CR>
-imap <leader>cc <Esc>:call CompileRun()<CR>
-vmap <leader>cc <Esc>:call CompileRun()<CR>
+map <leader>. :call CompileRun()<CR>
+imap <leader>. <Esc>:call CompileRun()<CR>
+vmap <leader>. <Esc>:call CompileRun()<CR>
 
 func! CompileRun()
 exec "w"
@@ -1150,6 +1150,9 @@ else
     exec "w"
 endif
 endfunc
+
+nmap <leader>b. :au BufWritePre *.rb,*.py,*.sh,*.coffee :call CompileRun()<cr>
+nmap <leader>u. :au! BufWritePre *.rb,*.py,*.sh,*.coffee<cr>
 
 "https://vim.fandom.com/wiki/Display_output_of_shell_commands_in_new_window
 function! s:ExecuteInShell(command)
