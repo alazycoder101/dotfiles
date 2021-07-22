@@ -28,10 +28,7 @@ Plug 'rdnetto/YCM-Generator', { 'branch': 'stable' }
 " Using a tagged release; wildcard allowed (requires git 1.9.2 or above)
 Plug 'fatih/vim-go', { 'tag': '*' }
 
-Plug 'valloric/youcompleteme'
-
-" Plugin options
-Plug 'nsf/gocode', { 'tag': 'v.20150303', 'rtp': 'vim' }
+"Plug 'valloric/youcompleteme'
 
 " Plugin outside ~/.vim/plugged with post-update hook
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
@@ -44,8 +41,9 @@ Plug 'yegappan/mru', { 'tag': '*' }
 "Plug 'sjl/badwolf', { 'tag': '*' }
 " ctrlp
 Plug 'ctrlpvim/ctrlp.vim', { 'tag': '*' }
+
 " AutoComplPop
-Plug 'vim-scripts/AutoComplPop', { 'tag': '*' }
+"Plug 'vim-scripts/AutoComplPop', { 'tag': '*' }
 " YankRing
 Plug 'vim-scripts/YankRing.vim'
 " unite-history
@@ -56,7 +54,6 @@ Plug 'ervandew/supertab'
 Plug 'Lokaltog/vim-easymotion', { 'tag': '*' }
 " vim-indent-guides
 Plug 'nathanaelkane/vim-indent-guides', { 'tag': '*' }
-Plug 'pangloss/vim-javascript'
 Plug 'leshill/vim-json'
 Plug 'w0rp/ale'
 "Plug 'dense-analysis/ale'
@@ -69,6 +66,7 @@ Plug 'tpope/vim-endwise'
 Plug 'tpope/vim-commentary'
 Plug 'thoughtbot/vim-rspec'
 Plug 'skywind3000/asyncrun.vim'
+Plug 'skywind3000/asyncrun.extra'
 Plug 'slim-template/vim-slim'
 Plug 'scrooloose/syntastic'
 Plug 'kchmck/vim-coffee-script'
@@ -92,18 +90,37 @@ Plug '~/my-prototype-plugin'
 
 Plug 'mileszs/ack.vim'
 
+" Plugin options
+Plug 'nsf/gocode', { 'tag': 'v.20150303', 'rtp': 'vim' }
 Plug 'dart-lang/dart-vim-plugin'
+Plug 'pangloss/vim-javascript'
 Plug 'thosakwe/vim-flutter'
 
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
+Plug 'autozimu/LanguageClient-neovim', {'branch': 'next', 'do': 'bash install.sh'}
 Plug 'dense-analysis/ale'
 
 Plug 'codota/tabnine-vim'
-Plug 'kevinhwang91/nvim-bqf'
+"Plug 'kevinhwang91/nvim-bqf'
 Plug 'romainl/vim-qf'
+
+Plug 'roxma/nvim-yarp'
+Plug 'roxma/vim-hug-neovim-rpc'
+Plug 'jpalardy/vim-slime'
+" Plug 'Shougo/denite.nvim'
+" Plug 'delphinus/denite-floaterm'
+Plug 'vifm/vifm.vim'
+Plug 'liuchengxu/vim-clap'
+Plug 'voldikss/clap-floaterm'
+Plug 'voldikss/fzf-floaterm'
+Plug 'Yggdroot/LeaderF', { 'do': ':LeaderfInstallCExtension'  }
+Plug 'voldikss/LeaderF-floaterm'
+Plug 'voldikss/vim-floaterm'
+Plug 'skywind3000/asynctasks.vim'
+Plug 'skywind3000/asyncrun.vim'
 
 " highly recommended
 "Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
@@ -147,7 +164,7 @@ set list listchars=tab:▸\ ,trail:·
 " Fast saving
 nmap <leader>w :w!<cr>
 
-" :W sudo saves the file 
+" :W sudo saves the file
 " (useful for handling the permission-denied error)
 command! W execute 'w !sudo tee % > /dev/null' <bar> edit!
 
@@ -159,7 +176,7 @@ command! W execute 'w !sudo tee % > /dev/null' <bar> edit!
 set so=7
 
 " Avoid garbled characters in Chinese language windows OS
-let $LANG='en' 
+let $LANG='en'
 set langmenu=en
 
 " Turn on the Wild menu
@@ -189,17 +206,17 @@ set whichwrap+=<,>,h,l
 " Ignore case when searching
 set ignorecase
 
-" When searching try to be smart about cases 
+" When searching try to be smart about cases
 set smartcase
 
 " Highlight search results
 set hlsearch
 
 " Makes search act like search in modern browsers
-set incsearch 
+set incsearch
 
 " Don't redraw while executing macros (good performance config)
-set lazyredraw 
+set lazyredraw
 
 " For regular expressions turn magic on
 set magic
@@ -229,7 +246,7 @@ set foldcolumn=1
 " => Colors and Fonts
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Enable syntax highlighting
-syntax enable 
+syntax enable
 
 " Enable 256 colors palette in Gnome Terminal
 if $COLORTERM == 'gnome-terminal'
@@ -347,7 +364,7 @@ map <leader>te :tabedit <C-r>=expand("%:p:h")<cr>/
 " Switch CWD to the directory of the open buffer
 map <leader>cd :cd %:p:h<cr>:pwd<cr>
 
-" Specify the behavior when switching between buffers 
+" Specify the behavior when switching between buffers
 try
   set switchbuf=useopen,usetab,newtab
   set stal=2
@@ -464,7 +481,7 @@ endfunction
 
 function! CmdLine(str)
     call feedkeys(":" . a:str)
-endfunction 
+endfunction
 
 function! VisualSelection(direction, extra_filter) range
     let l:saved_reg = @"
@@ -488,18 +505,19 @@ endfunction
 " => Ale (syntax checker and linter)
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let g:ale_linters = {
-      \   'ruby': ['standardrb', 'rubocop'],
+      \   'ruby': ['standardrb', 'rubocop', 'solargraph'],
       \   'python': ['flake8', 'pylint'],
       \   'javascript': ['eslint', 'jshint'],
       \   'go': ['go', 'golint', 'errcheck']
       \}
 
 let g:ale_fixers = {
-      \    'ruby': ['standardrb'],
+      \    'ruby': ['standardrb', 'rubocop'],
       \}
-let g:ale_fix_on_save = 1
+let g:ale_fix_on_save = 0
 
-nmap <silent> <leader>a <Plug>(ale_next_wrap)
+nmap <silent> <leader>n <Plug>(ale_next_wrap)
+nmap <silent> <leader>p <Plug>(ale_prev_wrap)
 
 " Disabling highlighting
 let g:ale_set_highlights = 0
@@ -529,12 +547,16 @@ set laststatus=2
 " => MRU plugin
 """"""""""""""""""""""""""""""
 let MRU_Max_Entries = 400
+"let MRU_File = '~/.vim/vim_mru_files'
+let MRU_Use_Current_Window = 1
 map <leader>m :MRU<CR>
 
 """"""""""""""""""""""""""""""
 " => YankRing
 """"""""""""""""""""""""""""""
 nnoremap <leader>yr :YRShow<CR>
+let g:yankring_history_dir = '$VIM'
+let g:yankring_history_file = 'yankring.log'
 
 """"""""""""""""""""""""""""""
 " => snipMate (beside <TAB> support <CTRL-j>)
@@ -560,7 +582,7 @@ map <leader>nf :NERDTreeFind<cr>
 let g:ctrlp_match_window = 'max:20,order:btt'
 let g:ctrlp_user_command = ['.git', 'cd %s && git ls-files -co --exclude-standard', 'find %s -type f']
 let g:ctrlp_custom_ignore = {
-    \ 'dir':  '\v[\/]\.(git|hg|svn|coffee|DS_Store)$',
+    \ 'dir':  '\v[\/](\.git|\.hg|\.svn|\.coffee|\.DS_Store|node_modules|vendor)$',
     \ 'file': '\v^\.|\.(swp|swo)$',
     \ }
 "let g:ctrlp_custom_ignore = 'node_modules\|^\.DS_Store\|^\.git\|^\.coffee'
@@ -591,6 +613,20 @@ map <leader>j :CtrlP<cr>
 let g:buffergator_viewport_split_policy = 'R'
 " I want my own keymappings...
 let g:buffergator_suppress_keymaps = 1
+
+" vim-slime
+" let g:slime_no_mappings = 1
+" nmap <c-s>l <Plug>SlimeSendCurrentLine
+" xmap <c-s><c-s> <Plug>SlimeRegionSend
+" nmap <c-s><c-s> <Plug>SlimeParagraphSend
+" nmap <c-s>v     <Plug>SlimeConfig
+let g:slime_target = "tmux"
+let g:slime_default_config = {"socket_name": get(split($TMUX, ","), 0), "target_pane": ":.2"}
+"let g:slime_config = {"socket_name": get(split($TMUX, ","), 0), "target_pane": ":.2"}
+let g:slime_default_config = {"socket_name": "default", "target_pane": "{last}"}
+
+nmap <leader>ss <Plug>SlimeSendCell
+
 
 " Looper buffers
 "let g:buffergator_mru_cycle_loop = 1
@@ -797,8 +833,8 @@ endif
 
 " Make <CR> auto-select the first completion item and notify coc.nvim to
 " format on enter, <cr> could be remapped by other vim plugin
-"inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm()
-"                              \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
+inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm()
+                              \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
 let g:endwise_no_mappings = v:true
 "inoremap <expr> <Plug>CustomCocCR pumvisible() ? coc#_select_confirm() : "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
 "imap <CR> <Plug>CustomCocCR<Plug>DiscretionaryEnd
@@ -926,6 +962,81 @@ nnoremap <silent><nowait> <space>k  :<C-u>CocPrev<CR>
 " Resume latest coc list.
 nnoremap <silent><nowait> <space>p  :<C-u>CocListResume<CR>
 
+"asynctasks
+noremap <silent><leader>fr :AsyncTask file-run<cr>
+
+let g:floaterm_keymap_new    = '<Leader>ft'
+let g:floaterm_keymap_prev   = '<Leader>fp'
+let g:floaterm_keymap_next   = '<Leader>fn'
+let g:floaterm_keymap_toggle = '<Leader>fs'
+
+" LeaderF
+let g:Lf_WindowPosition = 'popup'
+let g:Lf_PreviewInPopup = 1
+xnoremap gf :<C-U><C-R>=printf("Leaderf! rg -F -e %s ", leaderf#Rg#visual())<CR>
+noremap go :<C-U>Leaderf! rg --recall<CR>
+" don't show the help in normal mode
+let g:Lf_HideHelp = 1
+let g:Lf_UseCache = 0
+let g:Lf_UseVersionControlTool = 0
+let g:Lf_IgnoreCurrentBufferName = 1
+" popup mode
+let g:Lf_WindowPosition = 'popup'
+let g:Lf_PreviewInPopup = 1
+let g:Lf_StlSeparator = { 'left': "\ue0b0", 'right': "\ue0b2", 'font': "DejaVu Sans Mono for Powerline" }
+let g:Lf_PreviewResult = {'Function': 0, 'BufTag': 0 }
+
+let g:Lf_ShortcutF = "<leader>ff"
+noremap <leader>lf :<C-U><C-R>=printf("Leaderf file %s", "")<CR><CR>
+noremap <leader>lb :<C-U><C-R>=printf("Leaderf buffer %s", "")<CR><CR>
+noremap <leader>lc :<C-U><C-R>=printf("Leaderf command %s", "")<CR><CR>
+noremap <leader>ls :<C-U><C-R>=printf("Leaderf rg %s", "")<CR><CR>
+noremap <leader>lm :<C-U><C-R>=printf("Leaderf mru %s", "")<CR><CR>
+"noremap <leader>ft :<C-U><C-R>=printf("Leaderf bufTag %s", "")<CR><CR>
+"noremap <leader>fl :<C-U><C-R>=printf("Leaderf line %s", "")<CR><CR>
+
+noremap <C-B> :<C-U><C-R>=printf("Leaderf! rg --current-buffer -e %s ", expand("<cword>"))<CR>
+noremap <C-F> :<C-U><C-R>=printf("Leaderf! rg -e %s ", expand("<cword>"))<CR>
+" search visually selected text literally
+xnoremap gf :<C-U><C-R>=printf("Leaderf! rg -F -e %s ", leaderf#Rg#visual())<CR>
+noremap go :<C-U>Leaderf! rg --recall<CR>
+
+" Show icons, icons are shown by default
+let g:Lf_ShowDevIcons = 1
+" For GUI vim, the icon font can be specify like this, for example
+let g:Lf_DevIconsFont = "DroidSansMono Nerd Font Mono"
+" If needs
+"set ambiwidth=double
+" should use `Leaderf gtags --update` first
+"let g:Lf_GtagsAutoGenerate = 0
+"let g:Lf_Gtagslabel = 'native-pygments'
+"noremap <leader>fr :<C-U><C-R>=printf("Leaderf! gtags -r %s --auto-jump", expand("<cword>"))<CR><CR>
+"noremap <leader>fd :<C-U><C-R>=printf("Leaderf! gtags -d %s --auto-jump", expand("<cword>"))<CR><CR>
+"noremap <leader>fo :<C-U><C-R>=printf("Leaderf! gtags --recall %s", "")<CR><CR>
+"noremap <leader>fn :<C-U><C-R>=printf("Leaderf gtags --next %s", "")<CR><CR>
+"noremap <leader>fp :<C-U><C-R>=printf("Leaderf gtags --previous %s", "")<CR><CR>
+
+
+let g:clap_theme = 'material_design_dark'
+
+let g:asyncrun_open = 6
+
+" Required for operations modifying multiple buffers like rename.
+set hidden
+
+let g:LanguageClient_serverCommands = {
+    \ 'javascript': ['/usr/local/bin/javascript-typescript-stdio'],
+    \ 'javascript.jsx': ['tcp://127.0.0.1:2089'],
+    \ 'ruby': ['~/.rbenv/shims/solargraph', 'stdio'],
+    \ }
+
+" note that if you are using Plug mapping you should not use `noremap` mappings.
+nmap <F5> <Plug>(lcn-menu)
+" Or map each action separately
+nmap <silent>K <Plug>(lcn-hover)
+nmap <silent> gd <Plug>(lcn-definition)
+nmap <silent> <F2> <Plug>(lcn-rename)
+
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => GUI related
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -961,7 +1072,7 @@ autocmd! bufwritepost ~/.vimrc source ~/.vimrc
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => Turn persistent undo on 
+" => Turn persistent undo on
 "    means that you can undo even when you close a buffer/VIM
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 try
@@ -981,7 +1092,7 @@ cno $j e ./
 cno $c e <C-\>eCurrentFileDir("e")<cr>
 
 " $q is super useful when browsing on the command line
-" it deletes everything until the last slash 
+" it deletes everything until the last slash
 cno $q <C-\>eDeleteTillSlash()<cr>
 
 " Bash like keys for the command line
@@ -997,8 +1108,25 @@ map ½ $
 cmap ½ $
 imap ½ $
 
+" EasyMotion
+" <Leader>f{char} to move to {char}
+map  <Leader>f <Plug>(easymotion-bd-f)
+nmap <Leader>f <Plug>(easymotion-overwin-f)
+"
+" s{char}{char} to move to {char}{char}
+nmap <Leader>s <Plug>(easymotion-overwin-f2)
+"
+"" Move to line
+map <Leader>ml <Plug>(easymotion-bd-jk)
+nmap <Leader>ml <Plug>(easymotion-overwin-line)
 
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Move to word
+map  <Leader>mw <Plug>(easymotion-bd-w)
+nmap <Leader>mw <Plug>(easymotion-overwin-w)
+
+
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Parenthesis/bracket
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 vnoremap $1 <esc>`>a)<esc>`<i(<esc>
@@ -1082,7 +1210,7 @@ func! DeleteTillSlash()
         else
             let g:cmd_edited = substitute(g:cmd, "\\(.*\[/\]\\).*/", "\\1", "")
         endif
-    endif   
+    endif
 
     return g:cmd_edited
 endfunc
