@@ -20,7 +20,7 @@ Host github-lazycoder
   IdentitiesOnly yes
   IdentityFile ~/.ssh/id_rsa_lazycoder
   ControlMaster no
-Host *
+Host * !github-lazycoder
   User coder
   #HostKeyAlgorithms +ssh-dss
   AddKeysToAgent yes
