@@ -54,6 +54,7 @@ endfunction
 au FileType coffee call CoffeeScriptFold()
 
 au FileType gitcommit call setpos('.', [0, 1, 1, 0])
+au Filetype gitcommit setlocal spell textwidth=72
 
 
 """"""""""""""""""""""""""""""
@@ -78,3 +79,5 @@ autocmd BufRead *.twig set syntax=html filetype=html
 " => Markdown
 """"""""""""""""""""""""""""""
 let vim_markdown_folding_disabled = 1
+
+
