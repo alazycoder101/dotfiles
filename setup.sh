@@ -16,19 +16,33 @@ fi
 # bandwhich: Terminal bandwidth utilization tool
 # find=>fd cd=>zoxide ls=>exa ps=>procs tldr=>tealdeer du=>dust
 # sed=>sd grep=>ripgrep dmesg=>rmesg diff=>delta
+# https://zaiste.net/posts/shell-commands-rust/
 brew install bat exa procs sd dust ripgrep tokei ytop
 # ytop https://github.com/cjbassi/ytop
 brew tap cjbassi/ytop
 brew install ytop
 
-brew install bat ffmpeg curl lftp git
-# shell nushell
+brew install bat ffmpeg curl postman lftp
+brew install git git-interactive-rebase-tool
+# shell nushell fish
 brew install zsh
 # hyperfine: benchmarking
 brew install hyperfine
 
+# compress
+brew install xz unar
+
+brew install fzf thefuck parallel jq htop
+
+brew install autojump
+
 # network
-brew install bandwhich postman wget curl aria2 netcat siege tcpdump netcat
+brew install bandwhich postman wget curl postman aria2 netcat  \
+     siege tcpdump wireshark nmap netcat
+# proxy
+# brew install caddy mitmproxy
+# ssl
+# brew install mkcrt
 
 # dev tools
 # grex: Command-line tool for generating regular expressions
@@ -37,8 +51,8 @@ brew install grex rmesg
 # DB
 brew install redis postgres
 
-# env
-brew install pyenv rbenv
+# env pyenv rbenv nvm
+brew install asdf
 
 # Editor: vim vsc
 brew install visual-studio-code vim sublime-text
@@ -48,9 +62,15 @@ brew install libreoffice
 # cask
 # note: simplenote fsnotes
 # Tp-Note - Minimalistic note taking: save and edit your clipboard content as a note file
-brew install fsnotes simplenote
+brew install fsnotes simplenote mark-text
 
 brew install 1password alfred libreoffice
+
+# media
+brew install ffmpeg youtube-dl you-get imagemagick
+
+# container podman/docker
+brew install qemu lima colima docker-compose docker
 
 # setup zsh
 cd $ZSH_CUSTOM/plugins
