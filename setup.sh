@@ -62,7 +62,8 @@ brew install libreoffice
 # cask
 # note: simplenote fsnotes
 # Tp-Note - Minimalistic note taking: save and edit your clipboard content as a note file
-brew install fsnotes simplenote mark-text
+# glow: Render markdown on the CLI
+brew install fsnotes simplenote mark-text glow
 
 brew install 1password alfred libreoffice
 
