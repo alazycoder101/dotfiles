@@ -9,6 +9,9 @@ call plug#begin('~/.vim/plugged')
 " Buffergator
 Plug 'jeetsukumaran/vim-buffergator'
 
+" support vim file:line
+Plug 'bogado/file-line'
+
 " Shorthand notation; fetches https://github.com/junegunn/vim-easy-align
 Plug 'junegunn/vim-easy-align'
 
