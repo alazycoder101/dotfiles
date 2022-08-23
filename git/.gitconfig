@@ -69,6 +69,12 @@
 [core]
   pager = less -r
   editor = /opt/homebrew/bin/vim
+[diff]
+  tool = vimdiff
+[merge]
+  tool = vimdiff
+[difftool]
+  prompt = false
 [includeIf "gitdir:~/lazycoder/"]
   path = ~/.gitconfig-lazycoder
 [includeIf "gitdir:~/company/"]
