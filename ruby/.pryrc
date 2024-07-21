@@ -1,12 +1,20 @@
-IRB.conf[:PROMPT][:DEV] = { # name of prompt mode
-  :AUTO_INDENT => false,          # disables auto-indent mode
-  :PROMPT_I =>  ">> ",            # simple prompt
-  :PROMPT_S => nil,               # prompt for continuated strings
-  :PROMPT_C => nil,               # prompt for continuated statement
-  :RETURN => "    ==>%s\n"        # format to return value
-}
+if defined?(PryByebug)
+  Pry.commands.alias_command 'c', 'continue'
+  Pry.commands.alias_command 's', 'step'
+  Pry.commands.alias_command 'n', 'next'
+  Pry.commands.alias_command 'fin', 'finish'
+  Pry.commands.alias_command 'f', 'frame'
 
-#IRB.conf[:PROMPT_MODE] = :MY_PROMPT
+  Pry.commands.alias_command 'b', 'break'
+  Pry.commands.alias_command 'bt', 'backtrace'
+end
+
+Pry.config.editor = "ctags -e"
+
+# Hit Enter to repeat last command
+Pry::Commands.command /^$/, "repeat last command" do
+  pry_instance.run_command Pry.history.to_a.last
+end
 
 # Tracking and Debugging Helpers
 
@@ -256,24 +264,117 @@ def subclasses_of(klass)
   ObjectSpace.each_object(Class).select { |k| k < klass }
 end
 
+
+# Usage:
+# profile_block do
+#   100.times { Your.code.here }
+# end
+def profile_block
+  require 'ruby-prof'
+  RubyProf.start
+  yield
+  result = RubyProf.stop
+  printer = RubyProf::FlatPrinter.new(result)
+  printer.print(STDOUT, min_percent: 1)
+end
+
+# Usage:
+# measure_queries do
+#   User.where(active: true).to_a
+# end
+def measure_queries
+  queries = []
+  ActiveSupport::Notifications.subscribe("sql.active_record") do |_, start, finish, _, data|
+    queries << {sql: data[:sql], duration: (finish - start) * 1000}
+  end
+
+  yield
+
+  queries.each do |query|
+    puts "Query (#{query[:duration].round(2)}ms): #{query[:sql]}"
+  end
+  puts "Total queries: #{queries.size}"
+  puts "Total time: #{queries.sum { |q| q[:duration] }.round(2)}ms"
+end
+
+# Usage:
+# profile_memory do
+#   100.times { Array.new(100) }
+# end
+def profile_memory
+  require 'memory_profiler'
+  report = MemoryProfiler.report do
+    yield
+  end
+  report.pretty_print
+end
+
+def profile_method(klass, method_name)
+  original_method = klass.instance_method(method_name)
+  klass.define_method(method_name) do |*args, &block|
+    start_time = Time.now
+    result = original_method.bind(self).call(*args, &block)
+    end_time = Time.now
+    puts "#{klass}##{method_name} took #{(end_time - start_time) * 1000.0}ms"
+    result
+  end
+end
+
+# Usage:
+# profile_method(User, :expensive_method)
+
+def gc_stats
+  GC.start
+  stats = GC.stat
+  puts "GC Stats:"
+  puts "  Collections: #{stats[:count]}"
+  puts "  Time spent: #{stats[:time] / 1000000.0}s"
+  puts "  Objects allocated: #{stats[:total_allocated_objects]}"
+  puts "  Objects freed: #{stats[:total_freed_objects]}"
+end
+
+# Usage:
+# gc_stats
+
+def time_with_gc_disabled
+  GC.disable
+  start_time = Time.now
+  yield
+  end_time = Time.now
+  GC.enable
+  puts "Execution time (GC disabled): #{(end_time - start_time) * 1000.0}ms"
+end
+
+# Usage:
+# time_with_gc_disabled do
+#   1000.times { Object.new }
+# end
+
+
+def gem_available?(gem_name)
+  Gem::Specification.find_by_name(gem_name)
+rescue Gem::LoadError
+  false
+end
+
+def warn_gem_missing(gem_name)
+  puts "Warning: The '#{gem_name}' gem is not available. Please install it with 'gem install #{gem_name}' to use this function."
+end
+
 def track_changes(target, method_name)
-  original_value = target.send(method_name.to_s.sub('=', ''))
+  original_value = target.send(method_name)
   puts "Starting to track changes to #{target}.#{method_name}"
-  puts "Initial value: #{original_value.class}"
+  puts "Initial value: #{original_value.inspect}"
 
   trace = TracePoint.new(:line) do |tp|
-    #next unless tp.method_id.to_s == method_name.to_s && tp.self.instance_of?(target.class) && tp.self == target
-    next unless tp.self.instance_of?(target.class) && tp.self == target && tp.method_id.to_s.include?(method_name.to_s.sub('=', ''))
-
-    current_value = target.send(method_name.to_s.sub('=', ''))
+    current_value = target.send(method_name)
     if current_value != original_value
       puts "\nChange detected in #{target}.#{method_name}:"
-      puts "  From: #{original_value.class}"
-      puts "  To:   #{current_value.class}"
+      puts "  From: #{original_value.inspect}"
+      puts "  To:   #{current_value.inspect}"
       puts "  At:   #{tp.path}:#{tp.lineno}"
       puts "  Backtrace:"
       puts caller[0..5].map { |line| "    #{line}" }
-      puts '-'*60
       original_value = current_value
     end
   end
