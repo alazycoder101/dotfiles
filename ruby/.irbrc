@@ -185,6 +185,20 @@ def method_info(obj, method_name)
   puts "Source Location: #{method.source_location&.join(':')}"
 end
 
+def mixed_in_methods(klass, method = nil)
+  if method.present?
+    methods = [method]
+  else
+    methods = klass.methods
+  end
+  method_sources = methods.group_by { |m| klass.method(m).owner }
+
+  method_sources.each do |source, methods|
+    puts "#{source}: #{methods.count} methods"
+    puts "  #{methods.take(5).join(', ')}..." if methods.any?
+  end
+end
+
 # Usage: set_breakpoint(User, :save)
 def set_breakpoint(klass, method_name)
   require 'pry'
